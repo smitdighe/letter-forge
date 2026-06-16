@@ -8,14 +8,6 @@ export default {
     extend: {
       colors: {
         'base': '#080808',
-        'surface': '#0c0c0c',
-        'surface-hover': '#111111',
-        'border': 'rgba(255, 255, 255, 0.06)',
-        'border-hover': 'rgba(255, 255, 255, 0.12)',
-        'amber': {
-          DEFAULT: '#d4a053',
-          muted: '#b8923d',
-        },
       },
       fontFamily: {
         sans: ['Inter var', 'Inter', 'system-ui', 'sans-serif'],

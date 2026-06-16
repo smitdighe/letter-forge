@@ -20,7 +20,7 @@ function App() {
     setCoverLetter('')
 
     try {
-      const response = await fetch('https://letter-forge.onrender.com/api/generate', {
+      const response = await fetch('http://localhost:5000/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,74 +47,79 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-base">
-      <div className="max-w-2xl mx-auto px-6 py-16 sm:py-24">
+    <div className="min-h-screen bg-base relative overflow-hidden">
+      {/* Chrome orbs background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gradient-to-br from-white/20 to-white/5 blur-3xl" />
+        <div className="absolute top-1/3 -left-48 w-80 h-80 rounded-full bg-gradient-to-br from-white/15 to-white/5 blur-3xl" />
+        <div className="absolute -bottom-40 right-1/4 w-72 h-72 rounded-full bg-gradient-to-br from-white/10 to-white/5 blur-3xl" />
+        <div className="absolute top-2/3 -right-20 w-64 h-64 rounded-full bg-gradient-to-br from-white/12 to-white/5 blur-3xl" />
+        <div className="absolute -top-20 left-1/3 w-56 h-56 rounded-full bg-gradient-to-br from-white/18 to-white/5 blur-3xl" />
+      </div>
+
+      <div className="relative z-10 max-w-2xl mx-auto px-6 py-16 sm:py-24">
         {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-          className="mb-12"
+          className="mb-10"
         >
-          <div className="flex items-baseline gap-3 mb-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-white">
-              Letter Forge
-            </h1>
-            <span className="text-xs font-medium text-amber px-2 py-0.5 rounded-full bg-amber/10 border border-amber/20">
-              Beta
-            </span>
-          </div>
-          <p className="text-white/50 text-sm">
+          <h1 className="text-2xl font-semibold tracking-tight text-white mb-2">
+            Letter Forge
+          </h1>
+          <p className="text-white/40 text-sm">
             Cover letters that actually get read.
           </p>
         </motion.header>
 
-        {/* Main Form */}
+        {/* Main Form Card */}
         <motion.main
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
+          className="backdrop-blur-2xl bg-white/6 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_0_40px_rgba(255,255,255,0.03)]"
         >
           {/* Job Description */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-white/70 mb-2">
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-white/60 mb-2">
               Job Description
             </label>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job posting here..."
-              className="w-full h-36 px-4 py-3 bg-surface border border-border rounded-lg text-white placeholder:text-white/25 focus:outline-none focus:border-white/20 focus:bg-surface-hover transition-colors resize-none"
+              className="w-full h-36 px-4 py-3 bg-white/5 border border-white/8 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 transition-colors resize-none"
             />
           </div>
 
           {/* Your Background */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-white/70 mb-2">
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-white/60 mb-2">
               Your Background
             </label>
             <textarea
               value={background}
               onChange={(e) => setBackground(e.target.value)}
               placeholder="Describe your experience, skills, and achievements..."
-              className="w-full h-36 px-4 py-3 bg-surface border border-border rounded-lg text-white placeholder:text-white/25 focus:outline-none focus:border-white/20 focus:bg-surface-hover transition-colors resize-none"
+              className="w-full h-36 px-4 py-3 bg-white/5 border border-white/8 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 transition-colors resize-none"
             />
           </div>
 
           {/* Tone Selector */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-white/70 mb-2.5">
+            <label className="block text-sm font-medium text-white/60 mb-2.5">
               Tone
             </label>
-            <div className="inline-flex bg-surface border border-border rounded-lg p-1">
+            <div className="inline-flex bg-white/5 border border-white/8 rounded-xl p-1">
               {tones.map((tone) => (
                 <button
                   key={tone}
                   onClick={() => setSelectedTone(tone)}
-                  className={`px-4 py-1.5 text-sm rounded-md font-medium transition-all ${
+                  className={`px-4 py-1.5 text-sm rounded-lg font-medium transition-all ${
                     selectedTone === tone
-                      ? 'bg-white/10 text-white'
-                      : 'text-white/50 hover:text-white/70'
+                      ? 'bg-white/15 border border-white/20 text-white'
+                      : 'text-white/50 hover:text-white/70 border border-transparent'
                   }`}
                 >
                   {tone}
@@ -128,10 +133,10 @@ function App() {
             onClick={handleGenerate}
             disabled={isLoading || !jobDescription.trim() || !background.trim()}
             whileTap={{ scale: 0.995 }}
-            className={`w-full py-3 rounded-lg font-medium text-sm transition-all ${
+            className={`w-full py-3 rounded-xl font-medium text-sm transition-all ${
               !jobDescription.trim() || !background.trim()
-                ? 'bg-white/5 text-white/30 cursor-not-allowed border border-border'
-                : 'bg-white text-base hover:bg-white/90 shadow-sm'
+                ? 'bg-white/5 border border-white/8 text-white/30 cursor-not-allowed'
+                : 'bg-white/10 border border-white/15 text-white hover:bg-white/20'
             }`}
           >
             {isLoading ? (
@@ -149,17 +154,17 @@ function App() {
         <AnimatePresence>
           {coverLetter && (
             <motion.section
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4, ease: [0.25, 0.1, 0, 1] }}
-              className="mt-8"
+              className="mt-6 backdrop-blur-2xl bg-white/6 border border-white/10 rounded-2xl p-6 shadow-[0_0_40px_rgba(255,255,255,0.03)]"
             >
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-medium text-white/70">Output</h2>
+                <h2 className="text-sm font-medium text-white/60">Output</h2>
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors px-2 py-1 rounded hover:bg-white/5"
+                  className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/70 transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
                 >
                   <AnimatePresence mode="wait">
                     {copied ? (
@@ -168,7 +173,7 @@ function App() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex items-center gap-1 text-amber"
+                        className="flex items-center gap-1"
                       >
                         <CheckIcon />
                         Copied
@@ -188,8 +193,8 @@ function App() {
                   </AnimatePresence>
                 </button>
               </div>
-              <div className="bg-surface border border-border rounded-lg p-5">
-                <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+              <div className="bg-white/5 border border-white/8 rounded-xl p-4">
+                <p className="text-white/70 text-sm leading-relaxed whitespace-pre-wrap">
                   {coverLetter}
                 </p>
               </div>
@@ -202,9 +207,9 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-16 pt-8 border-t border-border"
+          className="mt-14 text-center"
         >
-          <p className="text-center text-white/30 text-xs">
+          <p className="text-white/30 text-xs">
             Built with AI to help you land your dream job
           </p>
         </motion.footer>
