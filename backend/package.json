@@ -1,0 +1,15 @@
+{
+  "name": "letter-forge-backend",
+  "version": "1.0.0",
+  "description": "AI Cover Letter Generator powered by Groq",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "groq-sdk": "^0.9.1"
+  }
+}
