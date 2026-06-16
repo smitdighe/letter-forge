@@ -7,33 +7,32 @@ export default {
   theme: {
     extend: {
       colors: {
-        'dark': '#0a0a1a',
-        'dark-lighter': '#0f0f2a',
-        'accent': '#7c3aed',
-        'accent-light': '#a78bfa',
-        'accent-dark': '#5b21b6',
+        'base': '#080808',
+        'surface': '#0c0c0c',
+        'surface-hover': '#111111',
+        'border': 'rgba(255, 255, 255, 0.06)',
+        'border-hover': 'rgba(255, 255, 255, 0.12)',
+        'amber': {
+          DEFAULT: '#d4a053',
+          muted: '#b8923d',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter var', 'Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
-        'shimmer': 'shimmer 2s linear infinite',
-        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-        'float': 'float 6s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.6s ease-out forwards',
+        'slide-up': 'slideUp 0.6s ease-out forwards',
       },
       keyframes: {
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(124, 58, 237, 0.5)' },
-          '50%': { boxShadow: '0 0 40px rgba(124, 58, 237, 0.8)' },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-      },
-      backgroundSize: {
-        '400%': '400% 100%',
       },
     },
   },

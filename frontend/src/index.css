@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter var', Inter, system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #0a0a1a;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #080808;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 body {
@@ -22,4 +23,17 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+::selection {
+  background-color: rgba(212, 160, 83, 0.2);
+  color: #d4a053;
+}
+
+textarea {
+  font-size: 15px;
+}
+
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
 }
