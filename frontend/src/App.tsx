@@ -38,7 +38,7 @@ function App() {
       setDisplayedText(coverLetter.slice(0, i))
       i++
       if (i > coverLetter.length) clearInterval(interval)
-    }, 8)
+    }, 6)
     return () => clearInterval(interval)
   }, [coverLetter])
 
