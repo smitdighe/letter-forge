@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motio
 type Tone = 'Professional' | 'Enthusiastic' | 'Concise'
 
 const tones: Tone[] = ['Professional', 'Enthusiastic', 'Concise']
+const titleLetters = "Letter Forge".split("")
 
 function App() {
   const [jobDescription, setJobDescription] = useState('')
@@ -12,12 +13,14 @@ function App() {
   const [coverLetter, setCoverLetter] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [displayedText, setDisplayedText] = useState('')
 
   const cursorX = useMotionValue(-1000)
   const cursorY = useMotionValue(-1000)
   const springX = useSpring(cursorX, { stiffness: 250, damping: 30, mass: 0.5 })
   const springY = useSpring(cursorY, { stiffness: 250, damping: 30, mass: 0.5 })
 
+  
   useEffect(() => {
     const move = (e: MouseEvent) => {
       cursorX.set(e.clientX)
@@ -26,6 +29,18 @@ function App() {
     window.addEventListener('mousemove', move)
     return () => window.removeEventListener('mousemove', move)
   }, [cursorX, cursorY])
+  
+  useEffect(() => {
+    if (!coverLetter) return
+    setDisplayedText('')
+    let i = 0
+    const interval = setInterval(() => {
+      setDisplayedText(coverLetter.slice(0, i))
+      i++
+      if (i > coverLetter.length) clearInterval(interval)
+    }, 8)
+    return () => clearInterval(interval)
+  }, [coverLetter])
 
   const handleGenerate = async () => {
     if (!jobDescription.trim() || !background.trim()) return
@@ -91,10 +106,19 @@ function App() {
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
           className="mb-10"
         >
-          <h1 className="text-2xl font-semibold tracking-tight text-white mb-2">
-            Letter Forge
+          <h1 className="text-5xl font-bold tracking-tight text-white mb-3 text-center flex justify-center flex-wrap">
+            {titleLetters.map((char, i) => (
+              <motion.span
+                key={i} 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, delay: i * 0.07, ease: [0.25, 0.1, 0, 1] }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
           </h1>
-          <p className="text-white/40 text-sm">
+          <p className="text-white/40 text-sm text-center">
             Cover letters that actually get read.
           </p>
         </motion.header>
@@ -221,7 +245,7 @@ function App() {
               </div>
               <div className="bg-white/5 border border-white/8 rounded-xl p-4">
                 <p className="text-white/70 text-sm leading-relaxed whitespace-pre-wrap">
-                  {coverLetter}
+                  {displayedText}
                 </p>
               </div>
             </motion.section>
@@ -236,7 +260,7 @@ function App() {
           className="mt-14 text-center"
         >
           <p className="text-white/30 text-xs">
-            Built with AI to help you land your dream job
+            
           </p>
         </motion.footer>
       </div>
