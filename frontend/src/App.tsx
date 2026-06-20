@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 
 type Tone = 'Professional' | 'Enthusiastic' | 'Concise'
 
@@ -12,6 +12,20 @@ function App() {
   const [coverLetter, setCoverLetter] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+
+  const cursorX = useMotionValue(-1000)
+  const cursorY = useMotionValue(-1000)
+  const springX = useSpring(cursorX, { stiffness: 250, damping: 30, mass: 0.5 })
+  const springY = useSpring(cursorY, { stiffness: 250, damping: 30, mass: 0.5 })
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      cursorX.set(e.clientX)
+      cursorY.set(e.clientY)
+    }
+    window.addEventListener('mousemove', move)
+    return () => window.removeEventListener('mousemove', move)
+  }, [cursorX, cursorY])
 
   const handleGenerate = async () => {
     if (!jobDescription.trim() || !background.trim()) return
@@ -47,14 +61,26 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-base relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-transparent">
+      {/* Cursor-following glow */}
+      <motion.div
+        aria-hidden
+        style={{
+          position: 'fixed',
+          left: springX,
+          top: springY,
+          translateX: '-50%',
+          translateY: '-50%',
+          zIndex: 0,
+        }}
+        className="pointer-events-none w-[600px] h-[600px] rounded-full bg-white/10 blur-[120px]"
+      />
+
       {/* Chrome orbs background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gradient-to-br from-white/20 to-white/5 blur-3xl" />
-        <div className="absolute top-1/3 -left-48 w-80 h-80 rounded-full bg-gradient-to-br from-white/15 to-white/5 blur-3xl" />
-        <div className="absolute -bottom-40 right-1/4 w-72 h-72 rounded-full bg-gradient-to-br from-white/10 to-white/5 blur-3xl" />
-        <div className="absolute top-2/3 -right-20 w-64 h-64 rounded-full bg-gradient-to-br from-white/12 to-white/5 blur-3xl" />
-        <div className="absolute -top-20 left-1/3 w-56 h-56 rounded-full bg-gradient-to-br from-white/18 to-white/5 blur-3xl" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-48 -right-32 w-[32rem] h-[32rem] rounded-full bg-white/30 blur-[120px]" />
+        <div className="absolute -bottom-48 -left-40 w-[32rem] h-[32rem] rounded-full bg-white/30 blur-[120px]" />
+        <div className="absolute top-1/3 -right-24 w-[30rem] h-[30rem] rounded-full bg-white/30 blur-[120px]" />
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto px-6 py-16 sm:py-24">
@@ -78,7 +104,7 @@ function App() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
-          className="backdrop-blur-2xl bg-white/6 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_0_40px_rgba(255,255,255,0.03)]"
+          className="backdrop-blur-2xl bg-white/[0.04] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_0_60px_rgba(255,255,255,0.04)] relative z-10"
         >
           {/* Job Description */}
           <div className="mb-5">
@@ -89,7 +115,7 @@ function App() {
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job posting here..."
-              className="w-full h-36 px-4 py-3 bg-white/5 border border-white/8 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 transition-colors resize-none"
+              className="w-full h-36 px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:border-white/25 focus:outline-none transition-colors resize-none"
             />
           </div>
 
@@ -102,7 +128,7 @@ function App() {
               value={background}
               onChange={(e) => setBackground(e.target.value)}
               placeholder="Describe your experience, skills, and achievements..."
-              className="w-full h-36 px-4 py-3 bg-white/5 border border-white/8 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 transition-colors resize-none"
+              className="w-full h-36 px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:border-white/25 focus:outline-none transition-colors resize-none"
             />
           </div>
 
@@ -158,7 +184,7 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4, ease: [0.25, 0.1, 0, 1] }}
-              className="mt-6 backdrop-blur-2xl bg-white/6 border border-white/10 rounded-2xl p-6 shadow-[0_0_40px_rgba(255,255,255,0.03)]"
+              className="mt-6 backdrop-blur-2xl bg-white/[0.04] border border-white/10 rounded-2xl p-6 shadow-[0_0_60px_rgba(255,255,255,0.04)] relative z-10"
             >
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-medium text-white/60">Output</h2>
