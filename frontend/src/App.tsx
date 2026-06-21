@@ -121,9 +121,39 @@ function App() {
 
       {/* Chrome orbs background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-48 -right-32 w-[32rem] h-[32rem] rounded-full bg-white/30 blur-[120px]" />
-        <div className="absolute -bottom-48 -left-40 w-[32rem] h-[32rem] rounded-full bg-white/30 blur-[120px]" />
-        <div className="absolute top-1/3 -right-24 w-[30rem] h-[30rem] rounded-full bg-white/30 blur-[120px]" />
+        <motion.div
+          className="absolute -top-48 -right-32 w-[32rem] h-[32rem] bg-white/30 blur-[120px]"
+          animate={{
+            borderRadius: [
+              '60% 40% 30% 70% / 60% 30% 70% 40%',
+              '30% 60% 70% 40% / 50% 60% 30% 60%',
+              '60% 40% 30% 70% / 60% 30% 70% 40%',
+            ],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-48 -left-40 w-[32rem] h-[32rem] bg-white/30 blur-[120px]"
+          animate={{
+            borderRadius: [
+              '40% 60% 70% 30% / 40% 70% 30% 60%',
+              '70% 30% 40% 60% / 30% 40% 60% 70%',
+              '40% 60% 70% 30% / 40% 70% 30% 60%',
+            ],
+          }}
+          transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        <motion.div
+          className="absolute top-1/3 -right-24 w-[30rem] h-[30rem] bg-white/30 blur-[120px]"
+          animate={{
+            borderRadius: [
+              '50% 50% 60% 40% / 50% 40% 60% 50%',
+              '40% 60% 50% 50% / 60% 50% 40% 50%',
+              '50% 50% 60% 40% / 50% 40% 60% 50%',
+            ],
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+        />
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto px-6 py-16 sm:py-24">
