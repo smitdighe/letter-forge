@@ -1,10 +1,30 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 type Tone = 'Professional' | 'Enthusiastic' | 'Concise'
 
 const tones: Tone[] = ['Professional', 'Enthusiastic', 'Concise']
-const titleLetters = "Letter Forge".split("")
+
+function useScramble(text: string, duration = 1500) {
+  const [display, setDisplay] = useState(text)
+  const chars = '!<>-_\\/[]{}=+*^?#@'
+  useEffect(() => {
+    let frame = 0
+    const totalFrames = Math.round(duration / 16)
+    const id = setInterval(() => {
+      setDisplay(
+        text.split('').map((char, i) => {
+          if (char === ' ') return ' '
+          if (frame / totalFrames > i / text.length) return char
+          return chars[Math.floor(Math.random() * chars.length)]
+        }).join('')
+      )
+      if (++frame > totalFrames) clearInterval(id)
+    }, 16)
+    return () => clearInterval(id)
+  }, [text])
+  return display
+}
 
 function App() {
   const [jobDescription, setJobDescription] = useState('')
@@ -19,6 +39,12 @@ function App() {
   const cursorY = useMotionValue(-1000)
   const springX = useSpring(cursorX, { stiffness: 250, damping: 30, mass: 0.5 })
   const springY = useSpring(cursorY, { stiffness: 250, damping: 30, mass: 0.5 })
+
+  const cardRef = useRef<HTMLDivElement>(null)
+  const cardX = useMotionValue(0)
+  const cardY = useMotionValue(0)
+  const rotateX = useSpring(useTransform(cardY, [-150, 150], [6, -6]), { stiffness: 300, damping: 30 })
+  const rotateY = useSpring(useTransform(cardX, [-150, 150], [-6, 6]), { stiffness: 300, damping: 30 })
 
   
   useEffect(() => {
@@ -75,6 +101,8 @@ function App() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const scrambledTitle = useScramble("Letter Forge", 1200)
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-transparent">
       {/* Cursor-following glow */}
@@ -106,30 +134,36 @@ function App() {
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
           className="mb-10"
         >
-          <h1 className="text-5xl font-bold tracking-tight text-white mb-3 text-center flex justify-center flex-wrap">
-            {titleLetters.map((char, i) => (
-              <motion.span
-                key={i} 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: i * 0.07, ease: [0.25, 0.1, 0, 1] }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-          </h1>
+          <motion.h1
+            className="text-5xl font-bold tracking-tight text-white mb-3 text-center font-mono"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {scrambledTitle}
+          </motion.h1>
+
           <p className="text-white/40 text-sm text-center">
             Cover letters that actually get read.
           </p>
         </motion.header>
 
         {/* Main Form Card */}
-        <motion.main
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
-          className="backdrop-blur-2xl bg-white/[0.04] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_0_60px_rgba(255,255,255,0.04)] relative z-10"
-        >
+          <motion.main
+            ref={cardRef}
+            onMouseMove={(e) => {
+              const rect = cardRef.current?.getBoundingClientRect()
+              if (!rect) return
+              cardX.set(e.clientX - rect.left - rect.width / 2)
+              cardY.set(e.clientY - rect.top - rect.height / 2)
+            }}
+            onMouseLeave={() => { cardX.set(0); cardY.set(0) }}
+            style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
+            className="backdrop-blur-2xl bg-white/[0.04] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_0_60px_rgba(255,255,255,0.04)] relative z-10"
+          >
           {/* Job Description */}
           <div className="mb-5">
             <label className="block text-sm font-medium text-white/60 mb-2">
